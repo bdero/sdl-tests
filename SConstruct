@@ -4,8 +4,10 @@ import os
 import shutil
 
 
-TARGET_DIR = 'bin'
-SOURCE_DIR = 'src'
+TARGET_DIR = "bin"
+SOURCE_DIR = "src"
+
+CXXFLAGS = "-std=c++11"
 
 def idempotent_copytree(source, destination):
     try:
@@ -76,7 +78,8 @@ def build_solution(name):
     # Build the solution
     solution = env.Program(
         target=os.path.join(TARGET_DIR, 'Release', name),
-        source=build_files
+        source=build_files,
+        CXXFLAGS=CXXFLAGS,
     )
     Default(solution)
 
