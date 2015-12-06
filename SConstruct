@@ -81,5 +81,7 @@ def build_solution(name):
     Default(solution)
 
 
-for root in os.listdir(SOURCE_DIR):
-    build_solution(root)
+# Build each directory in `src` as it's own project
+for project in os.listdir(SOURCE_DIR):
+    if os.path.isdir(os.path.join(SOURCE_DIR, project)):
+        build_solution(project)
