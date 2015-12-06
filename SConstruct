@@ -7,7 +7,15 @@ import shutil
 TARGET_DIR = "bin"
 SOURCE_DIR = "src"
 
-CXXFLAGS = "-std=c++11"
+CXXFLAGS = ["-std=c++11"]
+
+
+VARS = Variables(None, ARGUMENTS)
+VARS.Add(EnumVariable(
+    "mode", "The build mode to use",
+    "debug", allowed_values=("debug", "release")
+))
+
 
 def idempotent_copytree(source, destination):
     try:
@@ -41,8 +49,16 @@ def build_solution(name):
     BUILD_TARGET_SOURCE_DIR = os.path.join(TARGET_DIR, SOURCE_DIR)
     BUILD_TARGET_DIR = os.path.join(BUILD_TARGET_SOURCE_DIR, name)
 
+    CUSTOM_CXXFLAGS = []
+
     # Create a new build environment
-    env = Environment()
+    env = Environment(variables=VARS)
+
+    if env["mode"] == "debug":
+        CUSTOM_CXXFLAGS += ["-g", "-Og"]
+
+    if env["mode"] == "release":
+        CUSTOM_CXXFLAGS += ["-O3"]
 
     # Copy the source tree to the build directory
     print "Copying", BUILD_SOURCE_DIR, "to", BUILD_TARGET_DIR + ".."
@@ -77,11 +93,15 @@ def build_solution(name):
 
     # Build the solution
     solution = env.Program(
-        target=os.path.join(TARGET_DIR, 'Release', name),
+        target=os.path.join(
+            TARGET_DIR,
+            "Debug" if env['mode'] == "debug" else "Release",
+            name
+        ),
         source=build_files,
-        CXXFLAGS=CXXFLAGS,
+        CXXFLAGS=CXXFLAGS + CUSTOM_CXXFLAGS,
     )
-    Default(solution)
+    env.Default(solution)
 
 
 # Build each directory in `src` as it's own project
