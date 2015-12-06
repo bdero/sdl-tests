@@ -38,17 +38,27 @@ def build_solution(name):
     BUILD_SOURCE_DIR = os.path.join(SOURCE_DIR, name)
     BUILD_TARGET_DIR = os.path.join(TARGET_DIR, name)
 
-    idempotent_copytree(BUILD_SOURCE_DIR, BUILD_TARGET_DIR)
-
     # Create a new build environment
     env = Environment()
+
+    # Copy the source tree to the build directory
+    print "Copying", BUILD_SOURCE_DIR, "to", BUILD_TARGET_DIR + ".."
+    idempotent_copytree(BUILD_SOURCE_DIR, BUILD_TARGET_DIR)
 
     # Collect the source files
     build_files = []
     for d, sd, files in os.walk(BUILD_SOURCE_DIR):
-        build_files += Glob(os.path.join(d, '*.cpp'))
+        # Replace the SOURCE_DIR with the TARGET_DIR in the path
+        path = os.path.join(TARGET_DIR, d[len(SOURCE_DIR) + 1:])
 
-    if not build_files:
+        build_files += [
+            os.path.join(path, f) for f in files
+            if f.lower().endswith(".cpp")
+        ]
+
+    if build_files:
+        print "Collected", name, "build files:", build_files
+    else:
         print "Skipping", name, "because there are no CPP files!"
         return
 
