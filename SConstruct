@@ -102,6 +102,7 @@ def build_solution(name):
         CXXFLAGS=CXXFLAGS + CUSTOM_CXXFLAGS,
     )
     env.Default(solution)
+    env.Alias(name)
 
 
 # Build each directory in `src` as it's own project
