@@ -36,7 +36,8 @@ def idempotent_copytree(source, destination):
 
 def build_solution(name):
     BUILD_SOURCE_DIR = os.path.join(SOURCE_DIR, name)
-    BUILD_TARGET_DIR = os.path.join(TARGET_DIR, name)
+    BUILD_TARGET_SOURCE_DIR = os.path.join(TARGET_DIR, SOURCE_DIR)
+    BUILD_TARGET_DIR = os.path.join(BUILD_TARGET_SOURCE_DIR, name)
 
     # Create a new build environment
     env = Environment()
@@ -49,7 +50,7 @@ def build_solution(name):
     build_files = []
     for d, sd, files in os.walk(BUILD_SOURCE_DIR):
         # Replace the SOURCE_DIR with the TARGET_DIR in the path
-        path = os.path.join(TARGET_DIR, d[len(SOURCE_DIR) + 1:])
+        path = os.path.join(BUILD_TARGET_SOURCE_DIR, d[len(SOURCE_DIR) + 1:])
 
         build_files += [
             os.path.join(path, f) for f in files
@@ -74,7 +75,7 @@ def build_solution(name):
 
     # Build the solution
     solution = env.Program(
-        target=os.path.join(BUILD_TARGET_DIR, 'Release'),
+        target=os.path.join(TARGET_DIR, 'Release', name),
         source=build_files
     )
     Default(solution)
