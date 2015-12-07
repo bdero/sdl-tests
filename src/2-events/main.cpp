@@ -30,6 +30,12 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	bool running = true;
+
+	while(running) {
+
+	}
+
 	SDL_FreeSurface(imageSurface);
 
 	SDL_DestroyWindow(window);
