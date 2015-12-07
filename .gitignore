@@ -1,2 +1,4 @@
 /bin/
 .sconsign.dblite
+.cproject
+.project
