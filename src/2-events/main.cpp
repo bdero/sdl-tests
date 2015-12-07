@@ -30,10 +30,14 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	windowSurface = SDL_GetWindowSurface(window);
+	imageSurface = SDL_LoadBMP("images/test.bmp");
+
 	bool running = true;
 
 	SDL_Event ev;
 	while(running) {
+		// Manage the events
 		while(SDL_PollEvent(&ev) != 0) {
 			if (
 				ev.type == SDL_QUIT ||
@@ -42,6 +46,10 @@ int main(int argc, char **argv) {
 				running = false;
 			}
 		}
+
+		// Draw the surface
+		SDL_BlitSurface(imageSurface, NULL, windowSurface, NULL);
+		SDL_UpdateWindowSurface(window);
 	}
 
 	SDL_FreeSurface(imageSurface);
