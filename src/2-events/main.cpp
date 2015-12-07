@@ -32,8 +32,13 @@ int main(int argc, char **argv) {
 
 	bool running = true;
 
+	SDL_Event ev;
 	while(running) {
-
+		while(SDL_PollEvent(&ev) != 0) {
+			if (ev.type == SDL_QUIT) {
+				running = false;
+			}
+		}
 	}
 
 	SDL_FreeSurface(imageSurface);
